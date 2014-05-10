@@ -1,0 +1,10 @@
+---
+:orm: datamapper
+:test: none
+:mock: none
+:script: jquery
+:renderer: haml
+:stylesheet: compass
+:namespace: AcHome
+:migration_format: number
+:admin_renderer: haml
