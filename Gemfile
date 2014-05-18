@@ -10,7 +10,16 @@ source 'https://rubygems.org'
 # Optional JSON codec (faster performance)
 # gem 'oj'
 
-gem 'pry'
+gem 'coffee-script'
+gem 'yuicompressor'
+gem 'debugger'
+gem 'uglifier'
+gem 'parallel'
+gem 'peach'
+gem 'thor'
+gem 'padrino-sprockets', require: "padrino/sprockets"
+gem 'ruby-progressbar'
+gem 'awesome_print', require: 'awesome_print'
 
 # Project requirements
 gem 'rake'
@@ -19,7 +28,7 @@ gem 'rake'
 gem 'bcrypt'
 gem 'compass'
 gem 'haml'
-gem 'thin'
+# gem 'thin'
 gem 'dm-sqlite-adapter'
 gem 'dm-validations'
 gem 'dm-timestamps'

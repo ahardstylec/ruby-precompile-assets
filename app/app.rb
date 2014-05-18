@@ -2,12 +2,16 @@ module AcHome
   class App < Padrino::Application
     register Padrino::Mailer
     register Padrino::Helpers
-    register CompassInitializer
+    register Padrino::Admin::AccessControl
 
-
+    register Padrino::Sprockets
+    sprockets :minify => (Padrino.env == :production) # :url => 'assets', :root => app.root
+    
     enable :sessions
+    set :login_page,  '/sessions/new'
+    set :admin_model, 'Account'
+    disable :store_location
 
-    ##
     # Caching support.
     #
     # register Padrino::Cache
@@ -42,6 +46,20 @@ module AcHome
     # disable :flash                # Disables sinatra-flash (enabled by default if Sinatra::Flash is defined)
     # layout  :my_layout            # Layout can be in views/layouts/foo.ext or views/foo.ext (default :application)
     #
+    access_control.roles_for :any do |role|
+      role.protect '/'
+      role.allow   '/sessions'
+    end
+
+    access_control.roles_for :admin do |role|
+      role.project_module :accounts, '/accounts'
+    end
+
+    # Custom error management
+    error(403) { @title = "Error 403"; render('errors/403', :layout => :error) }
+    error(404) { @title = "Error 404"; render('errors/404', :layout => :error) }
+    error(500) { @title = "Error 500"; render('errors/500', :layout => :error) }
+
 
     ##
     # You can configure for a specified environment like:
@@ -49,18 +67,6 @@ module AcHome
     #   configure :development do
     #     set :foo, :bar
     #     disable :asset_stamp # no asset timestamping for dev
-    #   end
-    #
-
-    ##
-    # You can manage errors like:
-    #
-    #   error 404 do
-    #     render 'errors/404'
-    #   end
-    #
-    #   error 505 do
-    #     render 'errors/505'
     #   end
     #
   end
