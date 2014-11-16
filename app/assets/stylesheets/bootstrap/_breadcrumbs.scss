@@ -21,6 +21,10 @@
   }
 
   > .active {
-    color: $breadcrumb-active-color;
+    a{
+      color: $breadcrumb-active-color;
+      pointer-events: none;
+      cursor: default;
+    }
   }
 }

@@ -1,0 +1,22 @@
+=button_tag 'load_css file', class: 'btn btn-primary', onclick: '$("#load_css_file").trigger("click")'
+%input.hide{type: 'file', name:'load_css_file', id: 'load_css_file', accept: "text/css"}
+%hr
+.code_mirror_container
+  =text_area_tag 'sass_test', rows: 7, id: 'sass_test'
+
+:javascript
+  $('#load_css_file').on('change', function(e){
+    var files = $(this)[0].files;
+    if(files && files[0]){
+        if(files[0].type == 'text/css'){
+          reader = new FileReader();
+          reader.onload =function(e){
+            text = e.target.result;
+            $('.CodeMirror')[0].CodeMirror.getDoc().setValue(text);
+          };
+          reader.readAsText(files[0]);
+        }else{
+          AC.Alert.warning('filetype: '+files[0].type+' not_allowed', {append_to: $('.code_mirror_container')});
+        }
+    }
+  });

@@ -17,6 +17,23 @@ gem 'uglifier'
 gem 'parallel'
 gem 'peach'
 gem 'thor'
+gem 'thin'
+gem 'haml-coffee'
+gem 'dm-serializer'
+gem 'mime-types'
+gem 'rubyzip'
+gem 'rmagick'
+gem 'dm-paperclip'
+gem 'streamio-ffmpeg'
+gem 'curb'
+gem 'padrino-cookies'
+
+gem 'kaminari', :require => 'kaminari/sinatra'
+gem 'actionpack', '4.0.4'
+
+gem 'bzip2-ruby', :git => 'https://github.com/chewi/bzip2-ruby.git'
+gem 'haml_coffee_assets'
+gem 'execjs'
 gem 'padrino-sprockets', require: "padrino/sprockets"
 gem 'ruby-progressbar'
 gem 'awesome_print', require: 'awesome_print'
@@ -38,6 +55,7 @@ gem 'dm-aggregates'
 gem 'dm-types'
 gem 'dm-core'
 
+gem 'therubyracer'
 # Test requirements
 
 # Padrino Stable Gem

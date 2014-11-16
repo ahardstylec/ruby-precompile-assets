@@ -3,25 +3,31 @@
   =f.label :name, :class => 'control-label'
   .controls
     =f.text_field :name, :class => 'form-control input-large input-with-feedback', :autofocus => true
-    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : pat(:example)
+    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : '' #pat(:example)
+- error = @account.errors.key?(:username) && @account.errors[:username].count > 0
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :username, :class => 'control-label'
+  .controls
+    =f.text_field :username, :class => 'form-control input-large input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:username, :class => 'text-error') : '' #pat(:example)
 - error = @account.errors.key?(:surname) && @account.errors[:surname].count > 0
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label :surname, :class => 'control-label'
   .controls
     =f.text_field :surname, :class => 'form-control input-large input-with-feedback'
-    %span.help-inline=error ? f.error_message_on(:surname, :class => 'text-error') : pat(:example)
+    %span.help-inline=error ? f.error_message_on(:surname, :class => 'text-error') : '' #pat(:example)
 - error = @account.errors.key?(:email) && @account.errors[:email].count > 0
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label :email, :class => 'control-label'
   .controls
     =f.text_field :email, :class => 'form-control input-large input-with-feedback'
-    %span.help-inline=error ? f.error_message_on(:email, :class => 'text-error') : pat(:example)
+    %span.help-inline=error ? f.error_message_on(:email, :class => 'text-error') : '' #pat(:example)
 - error = @account.errors.key?(:password) && @account.errors[:password].count > 0
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label :password, :class => 'control-label'
   .controls
     =f.password_field :password, :class => 'form-control input-large input-with-feedback'
-    %span.help-inline=error ? f.error_message_on(:password, :class => 'text-error') : pat(:example)
+    %span.help-inline=error ? f.error_message_on(:password, :class => 'text-error') : '' #pat(:example)
 - error = @account.errors.key?(:password_confirmation) && @account.errors[:password_confirmation].count > 0
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label :password_confirmation, :class => 'control-label'
@@ -33,7 +39,7 @@
   =f.label :role, :class => 'control-label'
   .controls
     =f.text_field :role, :class => 'form-control input-large input-with-feedback'
-    %span.help-inline=error ? f.error_message_on(:role, :class => 'text-error') : pat(:example)
+    %span.help-inline=error ? f.error_message_on(:role, :class => 'text-error') : '' #pat(:example)
 
 .form-actions
   =f.submit pat(:save), :class => 'btn btn-primary'

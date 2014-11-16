@@ -9,43 +9,74 @@
     %meta{:name => :viewport, :content => 'width=device-width,initial-scale=1'}
     %title= @title.present? ? "#{@title} | Padrino Admin" : "Padrino Admin"
     =favicon_tag 'favicon.ico'
-    %link{:href => 'http://fonts.googleapis.com/css?family=Varela', :rel => :stylesheet}
     =stylesheet_link_tag :application
+    =javascript_include_tag :application
+    -#%script{src: "//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"}
+    -#%script{src: "https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"}
 
-  %body
-    .navbar.navbar-fixed-top
-      .navbar-inner
-        .container
-          =link_to 'Padrino', url(:home, :index), :class => 'navbar-brand', :title => 'Padrino Admin'
+  %body{"data-current_account" => current_account.to_json, "data-accounts" => Account.all.map{|a| a}.to_json }
+    .navbar.navbar-fixed-top.navbar-default{role: :navigation}
+      .container
+        .navbar-header
+          =link_to @hostname, url(:home, :index), :class => 'navbar-brand', :title => 'Padrino Admin'
+          %ul.navbar-nav.nav
+            %li=link_to 'Bilder', url(:images, :index)
+            %li=link_to 'Videos', url(:movies, :index)
+            %li=link_to 'Musik', url(:music, :index)
+            %li=link_to 'Suchen', url(:search, :index)
+            %li=link_to 'CodeMirror Test', url(:files, :code_mirror), remote: true
+            -if true || current_account.username == 'andi'
+              %li=link_to 'Attachments', url(:attachments, :index, page: 1), :title => "Attachments", 'data-toggle'=> "tooltip", 'data-placement'=>"bottom", class: 'attachment_index_link'
 
           -#%ul.nav.navbar-nav.pull-left
             -# project_modules.each do |project_module|
               -#%li{:class => "navbar-module #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
                 -#=link_to project_module.human_name, url(project_module.path)
+        %ul.nav.navbar-nav.navbar-right.navbar-collapse
+          %li=link_to icon_tag('share-square-o'), url(:shared_folders, :index), :title => "Freigegebene Dateien verwalten", 'data-toggle'=> "tooltip", 'data-placement'=>"bottom"
+          -if access_control.allowed?(current_account, url(:admin, :index))
+            %li=link_to icon_tag(:gears), url(:admin, :index), :title => "Settings", 'data-toggle'=> "tooltip", 'data-placement'=>"bottom"
 
-          %ul.nav.navbar-nav.pull-right
-            -if access_control.allowed?(current_account, url(:admin, :index))
-              %li.navbar-edit-account=link_to icon_tag(:gears), url(:admin, :index), :title => "Settings", :class => 'navbar-nav-link'
-            %li.navbar-edit-account=link_to icon_tag(:user), url(:accounts, :edit, :id => current_account.id), :title => pat(:profile), :class => 'navbar-nav-link'
-            %li.navbar-logout
-              =link_to icon_tag('sign-out'), url(:sessions, :destroy), method: :delete, class: 'navbar-nav-form'
-             
-    .container.main
-      .main-wrapper
+          %li=link_to icon_tag(:user), url(:accounts, :edit, :id => current_account.id), :title => pat(:profile), 'data-toggle'=> "tooltip", 'data-placement'=>"bottom"
+          %li=link_to icon_tag('sign-out'), url(:sessions, :destroy), method: :delete, 'data-toggle'=> "tooltip", 'data-placement'=>"bottom", title: 'ausloggen'
+        :javascript
+          $('ul.nav a').tooltip()
+    .container-fluid.main.main-wrapper
+      #alert-row.row
         ={:error => 'danger', :warning => 'warning', :success => 'success', :notice => 'info'}.map { |type, class_name| flash_tag(type, :class => "alert alert-#{class_name} fade in", :bootstrap => true) }.join.html_safe
-        .row=yield
-        .main-wrapper-push
+      .row-fluid
+        -if ['home', 'images'].include?(route.controller)
+          .left-sidebar.col-md-3{style: "padding-left: 0px"}
+            =yield_content :left_sidebar
+        .content_wrapper{class: ['home', 'images'].include?(route.controller) ? 'col-md-9' : 'col-md-12'}
+          .load_content.hide
+            .load_icon
+              =icon_tag('spinner', '', ['spin', '5x'])
+            %h3='Lade Daten'
+          .content
+            =yield 
 
-    %footer
-      .footer-wrapper.container
-        %p.pull-left
-          Copyright &copy;
-          =Time.now.year
-          Your Site - Powered by Padrino v.#{Padrino.version}
-        %ul.pull-right.footer-links
-          %li= link_to icon_tag(:home, 'web'), 'http://www.padrinorb.com', :target => :_blank, :class => 'footer-links-link'
-          %li= link_to icon_tag(:heart, 'blog'), 'http://www.padrinorb.com/blog', :target => :_blank, :class => 'footer-links-link'
-          %li= link_to icon_tag(:github, 'code'), 'https://github.com/padrino/padrino-framework', :target => :_blank, :class => 'footer-links-link'
-          %li= link_to icon_tag(:twitter, 'twitter'), 'http://twitter.com/padrinorb', :target => :_blank, :class => 'footer-links-link'
+/* %footer */
+//  .footer-wrapper.container
+//    %p.pull-left
+//      Copyright &copy;
+//      =Time.now.year
+//      Your Site - Powered by Padrino v.#{Padrino.version}
+//    %ul.pull-right.footer-links
+//      %li= link_to icon_tag(:home, 'web'), 'http://www.padrinorb.com', :target => :_blank, :class => 'footer-links-link'
+//     %li= link_to icon_tag(:heart, 'blog'), 'http://www.padrinorb.com/blog', :target => :_blank, :class => 'footer-links-link'
+//     %li= link_to icon_tag(:github, 'code'), 'https://github.com/padrino/padrino-framework', :target => :_blank, :class => 'footer-links-link'
+//     %li= link_to icon_tag(:twitter, 'twitter'), 'http://twitter.com/padrinorb', :target => :_blank, :class => 'footer-links-link'
+-if ['home', 'images'].include?(route.controller)
+  :coffeescript
+    $(document).ready ()->
+      $('.left-sidebar').height $(window).height() - $('.left-sidebar').offset().top - 20
+      $('.load_content').height $(window).height() - $('.load_content').offset().top - 20
 
-    =javascript_include_tag :application
+      $('.left-sidebar').resizable autoHide:true, ghost: true, handles: 'e', stop: (event, ui)->
+        $('.left-sidebar').height($(window).height()-$('.left-sidebar').offset().top - 20)
+        new_gap =(ui.size.width - ui.originalSize.width)
+        if (new_gap < 0 )
+          $('.content').width($('.content').width()  + Math.abs(new_gap))
+        else
+          $('.content').width($('.content').width()  - Math.abs(new_gap))

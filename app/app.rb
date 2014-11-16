@@ -1,17 +1,35 @@
+require 'socket'
+
 module AcHome
   class App < Padrino::Application
     register Padrino::Mailer
     register Padrino::Helpers
+
+    register Padrino::Cookies
     register Padrino::Admin::AccessControl
+    register Kaminari::Helpers::SinatraHelpers
 
     register Padrino::Sprockets
-    sprockets :minify => (Padrino.env == :production) # :url => 'assets', :root => app.root
-    
+    sprockets# :minify => (Padrino.env == :production) # :url => 'assets', :root => app.root
     enable :sessions
     set :login_page,  '/sessions/new'
     set :admin_model, 'Account'
     disable :store_location
 
+    set :protection, true
+    set :protect_from_csrf, false
+    # set :allow_disabled_csrf, true
+    #use Rack::Protection::HttpOrigin, origin_whitelist: ["chrome-extension://aejoelaoggembcahagimdiliamlcdmfm", "http://fizz.buzz.com"]
+    
+    mime_type "video/x-flv", 'application/octet-stream'
+    before do
+        @hostname =Socket.gethostname
+        ap params if ENV['RACK_ENV'] != 'production'
+    end
+
+    configure :production do
+        set :xsf_header, 'X-Accel-Redirect'
+    end
     # Caching support.
     #
     # register Padrino::Cache
@@ -55,11 +73,13 @@ module AcHome
       role.project_module :accounts, '/accounts'
     end
 
+    access_control.roles_for :member do |role|
+    end
+
     # Custom error management
     error(403) { @title = "Error 403"; render('errors/403', :layout => :error) }
     error(404) { @title = "Error 404"; render('errors/404', :layout => :error) }
     error(500) { @title = "Error 500"; render('errors/500', :layout => :error) }
-
 
     ##
     # You can configure for a specified environment like:

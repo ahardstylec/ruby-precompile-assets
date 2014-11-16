@@ -1,0 +1,23 @@
+-content_for :left_sidebar do
+	%h4
+		="Filesystem"
+		.btn-group
+			=link_to icon_tag('refresh'), '#', class: 'refresh_sidebar btn btn-sm btn-default'
+			=link_to icon_tag('plus'), url(:files, :new_file), class: 'btn btn-sm btn-default'
+	.filesystem_content{"data-filesystem" => @file_hirarchy.to_json}
+		%div.filesystem{id: "homefilesystem"}
+			%ul
+		%h5="Freunde"
+		#filesystem_friends
+			%ul
+
+:javascript
+	$(document).ready(function(){
+		AC.Filesystem.init()
+		$('.refresh_sidebar').on('click', function(e){
+			AC.Ajax.get("#{url(:home, :refresh_sidebar)}", {}, {success: function(response){
+				$('.filesystem_content').data('filesystem', response.data);
+				AC.Filesystem.init(true);
+			}});
+		});
+	});

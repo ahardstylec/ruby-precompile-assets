@@ -1,0 +1,22 @@
+var modal_template =JST['templates/modal'];
+var code_mirror_body= "<%=escape_javascript(partial 'files/code_mirror', formats: :html)%>";
+var code_mirror_modal = $(modal_template({id: 'code_mirrir_test', body: code_mirror_body, title: 'Code Mirror test'}));
+
+
+$('body').append(code_mirror_modal);
+
+function load_editor(mode){
+    var $sass_text_area = $('#sass_test');
+    var editor = CodeMirror.fromTextArea($sass_text_area[0], {
+        lineNumbers: true,
+        matchBrackets : true,
+        styleActiveLine: true,
+        autoCloseBrackets: true,
+        mode: "css",
+        gutters: ["CodeMirror-lint-markers"],
+        lint: true
+    });
+    $sass_text_area.data('codemirror', editor);
+}
+
+code_mirror_modal.modal().on('shown.bs.modal', load_editor);
